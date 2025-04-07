@@ -1,4 +1,10 @@
+from urllib.request import Request
+
+from starlette import status
+
+from core.models import BaseResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 
 def configure_app(app):
@@ -9,3 +15,15 @@ def configure_app(app):
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+
+async def global_exception_handler(request: Request, exception: Exception):
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content=BaseResponse(
+            message=str(exception),
+            success=False,
+            data={},
+        ).model_dump(),
+    )
+

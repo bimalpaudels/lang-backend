@@ -1,5 +1,8 @@
+from starlette import status
+
 from core.llm import Llama
 from utils.helpers import build_user_context
+from core.models import BaseResponse
 
 
 def about_me(user):
@@ -12,5 +15,7 @@ def about_me(user):
         """
     user_context = build_user_context(user.model_dump())
     output = llm.generate_translation_pair(user_context, prompt)
-    return output
+    return BaseResponse(data=output, message="Yay").model_dump()
+
+
 
