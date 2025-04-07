@@ -1,8 +1,7 @@
-from starlette import status
-
 from core.llm import Llama
 from utils.helpers import build_user_context
 from core.models import BaseResponse
+import edge_tts
 
 
 def about_me(user):
@@ -18,4 +17,8 @@ def about_me(user):
     return BaseResponse(data=output, message="Yay").model_dump()
 
 
-
+async def text_to_speech(text):
+    communicate = edge_tts.Communicate(text=text, voice="de-DE-KatjaNeural")
+    async for chunk in communicate.stream():
+        if chunk["type"] == "audio":
+            yield chunk["data"]
