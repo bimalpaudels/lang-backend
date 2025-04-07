@@ -25,3 +25,13 @@ class Llama:
 
         return get_result(result)
 
+    def generate_text(self, prompt):
+        """
+        Method to generate text for a given context. For example if a user clicks on "Ein",
+        it explains the context shortly
+        :param prompt: Prompt to generate text for. String
+        :return:
+        """
+        result = self.client.predict(textwrap.dedent(prompt).strip(),[],
+                                     use_deep_research=False, api_name="/query_deepseek_streaming")
+        return result
