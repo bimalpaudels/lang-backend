@@ -12,7 +12,7 @@ class Llama:
         client_id = "openfree/Llama-4-Maverick-17B-Research"
         self.client = Client(client_id)
 
-    def about_me(self, user_context, prompt):
+    def generate_translation_pair(self, user_context, prompt):
         """
         Method that generates target language output and translation output. Controls the
         output format irrespective of the user context.
