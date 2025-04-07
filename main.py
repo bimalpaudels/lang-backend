@@ -31,3 +31,7 @@ async def speak(text: str) -> StreamingResponse:
                              })
 
 
+@app.post("/detailed-meaning")
+async def detailed_meaning(context: models.DetailedMeaning) -> Response:
+    response = services.detailed_meaning(context.model_dump())
+    return JSONResponse(content=response, status_code=status.HTTP_200_OK)

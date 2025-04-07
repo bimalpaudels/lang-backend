@@ -37,3 +37,8 @@ def regex_splitter(text):
     if match:
         return [match.group(1), match.group(2)]
     return None
+
+
+def get_single_result(result):
+    output, md = result
+    return output[0][-1]

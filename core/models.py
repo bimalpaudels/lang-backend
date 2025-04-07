@@ -18,3 +18,7 @@ class BaseResponse(BaseModel):
     message: str = ""
     success: bool = True
     data: Any
+
+
+class DetailedMeaning(User):
+    word: str = ""
