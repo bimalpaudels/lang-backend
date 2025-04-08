@@ -1,10 +1,11 @@
 from core.llm import Llama, Gemini
 from utils.helpers import build_user_context, get_single_result
-from core.models import BaseResponse
+from core.models import BaseResponse, DetailedMeaningResponse
 import edge_tts
 
 
-def about_me(user):
+def generate_about_me(user):
+    # First working function: Depreciated
     llm = Llama()
     prompt = """
         Generate me a 150 words Introduction paragraph, following the format:
@@ -32,19 +33,21 @@ def detailed_meaning(context):
     :return:
     """
     print("Fetching detailed meaning...")
-    llm = Llama()
+    llm = Gemini()
     prompt = f"""
-            Explain in maximum 50 A1 English words, the different context in which {context['word']} 
+            Write 20 words context in English  {context['word']} 
             is used in {context['target_language']} with 2 
             different examples.
             """
+    config = {
+        'response_mime_type': 'application/json',
+        'response_schema': DetailedMeaningResponse,
+    }
+    response = llm.generate_text(prompt, **config)
+    return BaseResponse(data=response, message="Yay").model_dump()
 
-    output = llm.generate_text(prompt)
-    result = get_single_result(output)
-    return BaseResponse(data=result, message="Yay").model_dump()
 
-
-def generate_about_me(user):
+def about_me(user):
     """
     Getting user context based on Google's Models
     :return:
@@ -57,5 +60,6 @@ def generate_about_me(user):
                 Return({"original":str, "translated":str})
             """
     user_context = build_user_context(user.model_dump())
-    response = llm.generate_text(user_context, prompt)
+    response = llm.generate_translation_pair(user_context, prompt)
     return response
+

@@ -1,5 +1,7 @@
 import textwrap
 from gradio_client import Client
+
+from core.models import DetailedMeaningResponse
 from utils.helpers import get_result
 from google import genai
 from google.genai import types
@@ -49,7 +51,7 @@ class Gemini:
         self.model = "gemini-2.0-flash-lite"
         print("Model Initialized Successfully")
 
-    def generate_text(self, user_context, prompt):
+    def generate_translation_pair(self, user_context, prompt):
         response = self.client.models.generate_content(
             model=self.model,
             config=types.GenerateContentConfig(
@@ -59,3 +61,18 @@ class Gemini:
         )
         return response.text
 
+    def generate_text(self, prompt, **config):
+        """
+        Method to generate text for a given context. For example if a user clicks on "Ein",
+        it explains the context shortly.
+        :param prompt:
+        :param config:
+        :return: A structured detail of the given context.
+        """
+        # print("Generating Text For", prompt, config)
+        response = self.client.models.generate_content(
+            model=self.model,
+            contents=prompt,
+            config=config
+        )
+        return response.text

@@ -36,8 +36,3 @@ async def detailed_meaning(context: models.DetailedMeaning) -> Response:
     response = services.detailed_meaning(context.model_dump())
     return JSONResponse(content=response, status_code=status.HTTP_200_OK)
 
-
-@app.post('/exp')
-async def exp(user: models.User) -> Response:
-    response = services.generate_about_me(user)
-    return JSONResponse(content=response, status_code=status.HTTP_200_OK)
