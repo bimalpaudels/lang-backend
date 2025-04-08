@@ -1,6 +1,9 @@
 import textwrap
 from gradio_client import Client
 from utils.helpers import get_result
+from google import genai
+from google.genai import types
+from config import EnvSettings
 
 
 class Llama:
@@ -35,3 +38,24 @@ class Llama:
         result = self.client.predict(textwrap.dedent(prompt).strip(),[],
                                      use_deep_research=False, api_name="/query_deepseek_streaming")
         return result
+
+
+class Gemini:
+    """
+    Contains the API functionalities with Google's Gemini API.
+    """
+    def __init__(self):
+        self.client = genai.Client(api_key=EnvSettings().gemini_api_key)
+        self.model = "gemini-2.0-flash-lite"
+        print("Model Initialized Successfully")
+
+    def generate_text(self, user_context, prompt):
+        response = self.client.models.generate_content(
+            model=self.model,
+            config=types.GenerateContentConfig(
+                system_instruction=user_context,
+            ),
+            contents=prompt
+        )
+        return response.text
+

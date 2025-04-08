@@ -1,4 +1,4 @@
-from core.llm import Llama
+from core.llm import Llama, Gemini
 from utils.helpers import build_user_context, get_single_result
 from core.models import BaseResponse
 import edge_tts
@@ -42,3 +42,20 @@ def detailed_meaning(context):
     output = llm.generate_text(prompt)
     result = get_single_result(output)
     return BaseResponse(data=result, message="Yay").model_dump()
+
+
+def generate_about_me(user):
+    """
+    Getting user context based on Google's Models
+    :return:
+    """
+    print("Generating about me...")
+    llm = Gemini()
+    prompt = """
+                Write a 60 words simple 'About Me' in and translate it to German in JSON format.
+                Use this JSON schema:
+                Return({"original":str, "translated":str})
+            """
+    user_context = build_user_context(user.model_dump())
+    response = llm.generate_text(user_context, prompt)
+    return response
