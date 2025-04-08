@@ -1,10 +1,10 @@
 from fastapi import FastAPI, Response
 from fastapi.responses import JSONResponse, StreamingResponse
 from starlette import status
-import edge_tts
 from core import services, models
 from config import configure_app, global_exception_handler
 from core.models import BaseResponse
+
 
 app = FastAPI()
 configure_app(app)
@@ -34,4 +34,10 @@ async def speak(text: str) -> StreamingResponse:
 @app.post("/detailed-meaning")
 async def detailed_meaning(context: models.DetailedMeaning) -> Response:
     response = services.detailed_meaning(context.model_dump())
+    return JSONResponse(content=response, status_code=status.HTTP_200_OK)
+
+
+@app.post('/exp')
+async def exp(user: models.User) -> Response:
+    response = services.generate_about_me(user)
     return JSONResponse(content=response, status_code=status.HTTP_200_OK)
