@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List
 
 from pydantic import BaseModel
 from starlette import status
@@ -22,3 +22,10 @@ class BaseResponse(BaseModel):
 
 class DetailedMeaning(User):
     word: str = ""
+
+
+class DetailedMeaningResponse(BaseModel):
+    """Structure of detailed meaning response from Gemini API"""
+    word: str
+    context: str
+    examples: List[str]
