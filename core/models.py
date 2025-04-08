@@ -29,3 +29,8 @@ class DetailedMeaningResponse(BaseModel):
     word: str
     context: str
     examples: List[str]
+
+
+class TranslationPair(BaseModel):
+    original: str
+    translated: str
