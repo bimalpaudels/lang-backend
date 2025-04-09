@@ -48,10 +48,11 @@ class Gemini:
     """
     def __init__(self):
         self.client = genai.Client(api_key=EnvSettings().gemini_api_key)
-        self.model = "gemini-2.0-flash-lite"
+        self.model = "gemini-2.0-flash"
         print("Model Initialized Successfully")
 
     def generate_translation_pair(self, user_context, prompt):
+        # Depreciated because generate_text handles it all
         response = self.client.models.generate_content(
             model=self.model,
             config=types.GenerateContentConfig(

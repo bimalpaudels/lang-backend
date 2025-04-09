@@ -1,6 +1,8 @@
+import json
+
 from core.llm import Llama, Gemini
-from utils.helpers import build_user_context, get_single_result
-from core.models import BaseResponse, DetailedMeaningResponse
+from utils.helpers import build_user_context
+from core.models import BaseResponse, DetailedMeaningResponse, TranslationResponse
 import edge_tts
 
 
@@ -15,7 +17,7 @@ def generate_about_me(user):
         """
     user_context = build_user_context(user.model_dump())
     output = llm.generate_translation_pair(user_context, prompt)
-    return BaseResponse(data=output, message="Yay").model_dump()
+    return BaseResponse(data=json.loads(output), message="Yay").model_dump()
 
 
 async def text_to_speech(text):
@@ -44,7 +46,7 @@ def detailed_meaning(context):
         'response_schema': DetailedMeaningResponse,
     }
     response = llm.generate_text(prompt, **config)
-    return BaseResponse(data=response, message="Yay").model_dump()
+    return BaseResponse(data=json.loads(response), message="Yay").model_dump()
 
 
 def about_me(user):
@@ -55,11 +57,12 @@ def about_me(user):
     print("Generating about me...")
     llm = Gemini()
     prompt = """
-                Write a 60 words simple 'About Me' in and translate it to German in JSON format.
-                Use this JSON schema:
-                Return({"original":str, "translated":str})
+                Write a 60 words simple 'About Me' and translate it to German.
             """
-    user_context = build_user_context(user.model_dump())
-    response = llm.generate_translation_pair(user_context, prompt)
-    return response
-
+    config = {
+        'response_mime_type': 'application/json',
+        'response_schema': TranslationResponse,
+        'system_instruction': build_user_context(user.model_dump()),
+    }
+    response = llm.generate_text(prompt, **config).strip()
+    return BaseResponse(data=json.loads(response), message="Yay").model_dump()
