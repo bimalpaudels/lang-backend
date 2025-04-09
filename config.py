@@ -1,3 +1,5 @@
+from pathlib import Path
+from traceback import print_tb
 from urllib.request import Request
 
 from starlette import status
@@ -30,6 +32,11 @@ async def global_exception_handler(request: Request, exception: Exception):
 
 
 class EnvSettings(BaseSettings):
-    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8')
+    model_config = SettingsConfigDict(env_file=(Path(__file__).resolve().parents[0]/".env"),
+                                      env_file_encoding='utf-8')
     gemini_api_key: str = ''
+    openai_api_key: str = ''
+    openai_org_key: str = ''
 
+
+settings = EnvSettings()

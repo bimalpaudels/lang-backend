@@ -2,7 +2,7 @@ import json
 
 from core.llm import Llama, Gemini
 from utils.helpers import build_user_context
-from core.models import BaseResponse, DetailedMeaningResponse, TranslationPair
+from core.models import BaseResponse, DetailedMeaningResponse, TranslationResponse
 import edge_tts
 
 
@@ -61,10 +61,8 @@ def about_me(user):
             """
     config = {
         'response_mime_type': 'application/json',
-        'response_schema': TranslationPair,
+        'response_schema': TranslationResponse,
         'system_instruction': build_user_context(user.model_dump()),
     }
     response = llm.generate_text(prompt, **config).strip()
     return BaseResponse(data=json.loads(response), message="Yay").model_dump()
-
-

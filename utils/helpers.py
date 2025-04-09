@@ -43,3 +43,15 @@ def regex_splitter(text):
 def get_single_result(result):
     output, md = result
     return output[0][-1]
+
+
+def openai_structure_builder(validation_model, strict=True):
+    return {
+        "format":
+            {
+                "type": "json_schema",
+                "name": validation_model.__name__,
+                "schema": validation_model.model_json_schema(),
+                "strict": strict,
+            }
+    }
