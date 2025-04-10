@@ -1,9 +1,11 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, Depends
 from fastapi.responses import JSONResponse, StreamingResponse
 from starlette import status
 from core import services, models
 from config import configure_app, global_exception_handler
+from core.ai import GPT
 from core.models import BaseResponse
+from dependencies import get_gpt
 
 
 app = FastAPI()
@@ -12,8 +14,8 @@ app.add_exception_handler(Exception, global_exception_handler)
 
 
 @app.post("/about-me")
-async def about_me(user: models.User) -> Response:
-    response = services.about_me(user)
+async def about_me(user: models.User, gpt: GPT = Depends(get_gpt)) -> Response:
+    response = services.translate_user_introduction(user, gpt)
     return JSONResponse(content=response, status_code=status.HTTP_200_OK)
 
 
