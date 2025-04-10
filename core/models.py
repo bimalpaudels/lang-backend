@@ -20,15 +20,10 @@ class BaseResponse(BaseModel):
     data: Any
 
 
-class DetailedMeaning(User):
+class DetailedMeaning(BaseModel):
     word: str = ""
-
-
-class DetailedMeaningResponse(BaseModel):
-    """Structure of detailed meaning response from Gemini API"""
-    word: str
-    context: str
-    examples: List[str]
+    target_language: str = ""
+    current_level: str = ""
 
 
 class OpenAIBaseResponse(BaseModel):
@@ -39,6 +34,13 @@ class OpenAIBaseResponse(BaseModel):
     to be False.
     """
     model_config = ConfigDict(extra="forbid")
+
+
+class DetailedMeaningResponse(OpenAIBaseResponse):
+    """Structure of detailed meaning response from Gemini API"""
+    word: str
+    context: str
+    examples: List[str]
 
 
 class TranslationResponse(OpenAIBaseResponse):
