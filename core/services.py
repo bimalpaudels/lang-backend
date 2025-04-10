@@ -7,7 +7,7 @@ from core.models import BaseResponse, DetailedMeaningResponse, TranslationRespon
 import edge_tts
 
 
-def generate_about_me(user):
+def llama_about_me(user):
     # First working function: Depreciated
     llm = Llama()
     prompt = """
@@ -28,7 +28,7 @@ async def text_to_speech(text):
             yield chunk["data"]
 
 
-def detailed_meaning(context):
+def gemini_detailed_meaning(context):
     """
     Generates context description for a word. The prompt should use language detail from the user_context.
     TODO: Support for a phrase
@@ -50,7 +50,7 @@ def detailed_meaning(context):
     return BaseResponse(data=json.loads(response), message="Yay").model_dump()
 
 
-def about_me(user):
+def gemini_about_me(user):
     """
     Getting user context based on Google's Models
     :return:
@@ -86,3 +86,19 @@ def translate_user_introduction(user, gpt):
     response = gpt.generate_structured(inp, instructions=instructs, text=schema)
     return BaseResponse(data=json.loads(response), message="Yay").model_dump()
 
+
+def detailed_description(context, gpt):
+    """
+    Receives a word (also phrase in the future) and generates a detailed description in English
+    in the context of the user's target language.
+    :param context: User details and the word to describe.
+    :param gpt: Shared gpt instance.
+    :return: Detailed description wrapped in BaseResponse.
+    """
+    instructs = """You define a given word concisely in the context of target language 
+                    and provides 2 examples at the end with translation"""
+    inp = f"""Context: {context.model_dump()}"""
+
+    schema = openai_structure_builder(DetailedMeaningResponse, strict=True)
+    response = gpt.generate_structured(inp, instructions=instructs, text=schema)
+    return BaseResponse(data=json.loads(response), message="Yay").model_dump()
