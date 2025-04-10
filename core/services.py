@@ -1,7 +1,8 @@
 import json
 
 from core.llm import Llama, Gemini
-from utils.helpers import build_user_context
+from core.ai import GPT
+from utils.helpers import build_user_context, openai_structure_builder
 from core.models import BaseResponse, DetailedMeaningResponse, TranslationResponse
 import edge_tts
 
@@ -66,3 +67,22 @@ def about_me(user):
     }
     response = llm.generate_text(prompt, **config).strip()
     return BaseResponse(data=json.loads(response), message="Yay").model_dump()
+
+
+def translate_user_introduction(user, gpt):
+    """
+    Generates and translates a short introduction paragraph for the given user.
+    :param user: User object with their personal information.
+    :param gpt: Shared gpt instance.
+    :return: JSON Object with original and translated text.
+    """
+
+    instructs = "You are a translator that generates a 24 words paragraph and translates to target language."
+    inp = (f"Intro for {user.model_dump()} starting with a greeting in the "
+           f"target language.")
+
+    schema = openai_structure_builder(TranslationResponse, strict=True)
+
+    response = gpt.generate_structured(inp, instructions=instructs, text=schema)
+    return BaseResponse(data=json.loads(response), message="Yay").model_dump()
+
