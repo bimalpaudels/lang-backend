@@ -1,11 +1,14 @@
 from fastapi import FastAPI, Response, Depends
 from fastapi.responses import JSONResponse, StreamingResponse
 from starlette import status
+
 from core import services, models
 from config import configure_app, global_exception_handler
 from core.ai import GPT
 from core.models import BaseResponse
 from dependencies import get_gpt
+import contextuals.services as contextual_services
+import contextuals.models as contextuals_models
 
 
 app = FastAPI()
@@ -38,3 +41,14 @@ async def detailed_meaning(context: models.DetailedMeaning, gpt: GPT = Depends(g
     response = services.detailed_description(context, gpt)
     return JSONResponse(content=response, status_code=status.HTTP_200_OK)
 
+
+@app.post("/create-contexts")
+async def generate_contexts(user: models.User, gpt: GPT = Depends(get_gpt)) -> Response:
+    response = contextual_services.context_generator(user, gpt)
+    return JSONResponse(content=response, status_code=status.HTTP_200_OK)
+
+
+@app.post("/create-context-dialogue")
+async def generate_context_dialogue(context: contextuals_models.Context, gpt: GPT = Depends(get_gpt)) -> Response:
+    response = contextual_services.generate_contextual_dialogue(context, gpt)
+    return JSONResponse(content=response, status_code=status.HTTP_200_OK)

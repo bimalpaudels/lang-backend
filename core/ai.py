@@ -24,6 +24,7 @@ class GPT:
             input=input_text,
             instructions=instructions,
             text=text,
+            max_output_tokens=100,
             **kwargs
         ).output_text
 
