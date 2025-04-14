@@ -95,8 +95,8 @@ def detailed_description(context, gpt):
     :param gpt: Shared gpt instance.
     :return: Detailed description wrapped in BaseResponse.
     """
-    instructs = """You define a given word concisely in the context of target language 
-                    and provides 2 examples at the end with translation"""
+    instructs = """You define a given word in English concisely in the context of target language in 30 words. 
+                    and provide 2 examples (10 words) at the end with translation in (brackets)."""
     inp = f"""Context: {context.model_dump()}"""
 
     schema = openai_structure_builder(DetailedMeaningResponse, strict=True)
