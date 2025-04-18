@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Response, Depends
+from fastapi import FastAPI, Response, Depends, WebSocket
 from fastapi.responses import JSONResponse, StreamingResponse
 from starlette import status
 
@@ -9,6 +9,7 @@ from core.models import BaseResponse
 from dependencies import get_gpt
 import contextuals.services as contextual_services
 import contextuals.models as contextuals_models
+from voice.transcription import OpenAIRealTime
 
 
 app = FastAPI()
@@ -52,3 +53,22 @@ async def generate_contexts(user: models.User, gpt: GPT = Depends(get_gpt)) -> R
 async def generate_context_dialogue(context: contextuals_models.Context, gpt: GPT = Depends(get_gpt)) -> Response:
     response = contextual_services.generate_contextual_dialogue(context, gpt)
     return JSONResponse(content=response, status_code=status.HTTP_200_OK)
+
+
+@app.websocket("/realtime-api")
+async def generate_transcript(websocket: WebSocket):
+    await websocket.accept()
+
+    # session = OpenAIRealTime()
+    # await session.connect()
+
+    try:
+        # await session.handle_stream(websocket)
+        websocket = await websocket.receive_bytes()
+        print(websocket)
+    except Exception as error:
+        print("Something went wrong", error)
+
+    finally:
+        # await session.disconnect()
+        print("Done")
