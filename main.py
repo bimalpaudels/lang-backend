@@ -55,20 +55,19 @@ async def generate_context_dialogue(context: contextuals_models.Context, gpt: GP
     return JSONResponse(content=response, status_code=status.HTTP_200_OK)
 
 
-@app.websocket("/realtime-api")
+@app.websocket("/realtime-api/")
 async def generate_transcript(websocket: WebSocket):
     await websocket.accept()
 
-    # session = OpenAIRealTime()
-    # await session.connect()
+    session = OpenAIRealTime()
+    await session.connect()
 
     try:
-        # await session.handle_stream(websocket)
-        websocket = await websocket.receive_bytes()
-        print(websocket)
+
+        await session.handle_stream(websocket)
     except Exception as error:
         print("Something went wrong", error)
 
     finally:
-        # await session.disconnect()
+        await session.disconnect()
         print("Done")
